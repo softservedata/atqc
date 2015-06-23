@@ -3,12 +3,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.softserve.edu</groupId>
-	<artifactId>first</artifactId>
-	<version>9.0</version>
+	<artifactId>atqc</artifactId>
+	<version>1.0</version>
 
 	<packaging>jar</packaging>
 	
-	<name>first</name>
+	<name>atqc</name>
 	<url>http://maven.apache.org</url>
 
 	<dependencies>

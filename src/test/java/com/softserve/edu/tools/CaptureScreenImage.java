@@ -52,6 +52,7 @@ public class CaptureScreenImage {
     /**
      * @return Absolute path of filename.
      */
+    /*
     public String captureAndSaveScreen() {
         String absolutePathFileName = getAbsolutePathFileName();
         ScreenImage screenImage = SikuliScreenWrapper.get().getCurrentScreen()
@@ -67,5 +68,6 @@ public class CaptureScreenImage {
         }
         return absolutePathFileName;
     }
+    */
 
 }
