@@ -6,6 +6,8 @@ public interface IBrowser {
 
 	WebDriver getWebDriver();
 
+	String getWebDriverName();
+
 	void quit();
 
 }

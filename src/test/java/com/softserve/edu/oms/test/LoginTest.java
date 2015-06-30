@@ -7,12 +7,19 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.softserve.edu.oms.data.IUser;
 import com.softserve.edu.oms.data.UrlRepository;
+import com.softserve.edu.oms.data.UrlRepository.Urls;
 import com.softserve.edu.oms.data.UserRepository;
 import com.softserve.edu.oms.page.AdminHomePage;
+import com.softserve.edu.oms.page.AdministrationPage;
+import com.softserve.edu.oms.page.AdministrationPage.AdministrationPageConditions;
+import com.softserve.edu.oms.page.AdministrationPage.AdministrationPageFields;
 import com.softserve.edu.oms.page.CustomerHomePage;
 import com.softserve.edu.oms.page.LoginPage;
 import com.softserve.edu.oms.page.LoginStartPage;
+import com.softserve.edu.tools.BrowserRepository;
+import com.softserve.edu.tools.IBrowser;
 import com.softserve.edu.tools.WebDriverUtils;
 
 public class LoginTest {
@@ -31,7 +38,8 @@ public class LoginTest {
 	@DataProvider
 	public Object[][] urlDataProvider() {
 		return new Object[][] {
-				{ UrlRepository.getClass86Url() },
+				{ UrlRepository.Urls.SSU_HOST.toString() },
+				//{ UrlRepository.getClass86Url() },
 				//{ UrlRepository.getSsuUrl() }
 				};
 	}
@@ -46,7 +54,7 @@ public class LoginTest {
 				loginpage.getInvalidLoginValidator());
 	}
 
-	@Test(dataProvider = "urlDataProvider")
+	//@Test(dataProvider = "urlDataProvider")
 	public void checkAdminLogin(String url) {
 		// Steps
 		// LoginPage loginpage = new LoginPage(driver);
@@ -78,6 +86,38 @@ public class LoginTest {
 				customerHomePage.getLastName());
 		Assert.assertEquals(UserRepository.getCustomerUser().getRole(),
 				customerHomePage.getRole());
+	}
+
+	@DataProvider
+	public Object[][] searchProvider() {
+		return new Object[][] { {
+			    BrowserRepository.getFirefoxByTemporaryProfile(),
+				Urls.SSU_HOST.toString(),
+				UserRepository.getSearchUser() },
+			    { BrowserRepository.getChromeByTemporaryProfile(),
+				Urls.SSU_HOST.toString(),
+				UserRepository.getSearchUser() },
+		// { BrowserRepository.getChromeByTemporaryProfile() }
+		};
+	}
+
+	@Test(dataProvider = "searchProvider")
+	public void checkSearchByLogin(IBrowser browser, String url, IUser searchUser) throws InterruptedException {
+		// Preconditions
+		  AdministrationPage administrationPage = LoginStartPage.load(browser, url)
+				  .successAdminLogin(UserRepository.getAdminUser())
+				  .navigateToAdministrationPage();
+		  // Steps
+		  administrationPage.searchByLoginName(AdministrationPageFields.LOGIN_NAME,
+				  AdministrationPageConditions.STARTS_WITH, searchUser);
+		  // Check
+		  Assert.assertEquals(administrationPage.getFirstName().getText(),
+				  searchUser.getLastName());
+		  Assert.assertEquals(administrationPage.getFirstName().getText(),
+				  searchUser.getLastName());
+		  // Return to previous state
+		  Thread.sleep(4000);
+		  administrationPage.logoutClick();
 	}
 
 }

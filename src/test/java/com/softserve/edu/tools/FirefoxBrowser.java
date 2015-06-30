@@ -9,6 +9,11 @@ public class FirefoxBrowser implements IBrowser {
 		return new FirefoxDriver();
 	}
 
+	public String getWebDriverName() {
+		return this.getClass().getName();
+		//return "FirefoxBrowser";
+	}
+
 	public void quit() {
 	}
 

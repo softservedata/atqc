@@ -15,8 +15,8 @@ public class ScreenCapturingCustomException extends GeneralCustomException {
     }
 
     private void takeScreenshot() {
-//        LoggerWrapper.get().infoLog("Screenshot filename is "
-//                        + CaptureScreenImage.get().captureAndSaveScreen());
+        LoggerWrapper.get().infoLog("Screenshot filename is "
+                        + CaptureScreenImage.get().captureAndSaveScreen());
     }
 
 }

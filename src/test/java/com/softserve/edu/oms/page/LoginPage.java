@@ -12,7 +12,7 @@ public class LoginPage {
 	private WebElement password;
 
 	public LoginPage() {
-		loginName = ContextVisible.get().getVisibleWebElement(By.name("j_username1"));
+		loginName = ContextVisible.get().getVisibleWebElement(By.name("j_username"));
 		password = ContextVisible.get().getVisibleWebElement(By.name("j_password"));
 	}
 

@@ -13,10 +13,9 @@ public class AdminHomePage extends HomePage {
 		administration = ContextVisible.get().getVisibleWebElement(By.partialLinkText("Administration"));
 	}
 
-	//public AdministrationPage navigateToAdministrationPage() {
-	public void navigateToAdministrationPage() {
+	public AdministrationPage navigateToAdministrationPage() {
 		administration.click();
-		//return new AdministrationPage();
+		return new AdministrationPage();
 	}
 	
 }

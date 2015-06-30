@@ -35,4 +35,15 @@ public class UserRepository {
 					.build();
 	}
 
+	public static IUser getSearchUser() {
+		return User.get()
+					.setFirstName("a")
+					.setLastName("a")
+					.setLoginName("aaa")
+					.setPassword("qwerty")
+					.setEmail("mail@gmail.com")
+					.setRole("Customer")
+					.build();
+	}
+
 }
