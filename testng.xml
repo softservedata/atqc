@@ -5,9 +5,13 @@
 		<classes>
 			<class name="com.softserve.edu.oms.test.LoginTest">
 				<methods>
+				    <!--
 					<include name="checkInvalid" />
 					<include name="checkAdminLogin" />
 					<include name="checkCustomerLogin" />
+					<include name="checkSearchByLogin" />
+					 -->
+					<include name="checkLogin" />
 				</methods>
 			</class>
 		</classes>

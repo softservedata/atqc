@@ -1,5 +1,7 @@
 package com.softserve.edu.oms.data;
 
+import java.util.List;
+
 public class UserRepository {
 	public static IUser getInvalidUser() {
 		return User.get()
@@ -44,6 +46,10 @@ public class UserRepository {
 					.setEmail("mail@gmail.com")
 					.setRole("Customer")
 					.build();
+	}
+
+	public static List<IUser> getAllValidUserFormFile() {
+		return (new ExcelUtils("C:/Users/yharasym/workspace/atqc/target/test-classes/allUsers.xlsx")).getAll(); 
 	}
 
 }

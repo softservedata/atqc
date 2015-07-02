@@ -8,6 +8,7 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 import com.softserve.edu.oms.data.IUser;
+import com.softserve.edu.oms.data.ListUtils;
 import com.softserve.edu.oms.data.UrlRepository;
 import com.softserve.edu.oms.data.UrlRepository.Urls;
 import com.softserve.edu.oms.data.UserRepository;
@@ -18,6 +19,7 @@ import com.softserve.edu.oms.page.AdministrationPage.AdministrationPageFields;
 import com.softserve.edu.oms.page.CustomerHomePage;
 import com.softserve.edu.oms.page.LoginPage;
 import com.softserve.edu.oms.page.LoginStartPage;
+import com.softserve.edu.tools.AssertWrapper;
 import com.softserve.edu.tools.BrowserRepository;
 import com.softserve.edu.tools.IBrowser;
 import com.softserve.edu.tools.WebDriverUtils;
@@ -33,6 +35,26 @@ public class LoginTest {
 	public void tearDown() throws Exception {
 		WebDriverUtils.get().getWebDriver()
 				.findElement(By.xpath("//a[@href='/OMS/logout.htm']")).click();
+	}
+	
+	@DataProvider
+	public Object[][] userDataProvider() {
+		return ListUtils.toMultiArray(UserRepository.getAllValidUserFormFile());
+	}
+
+	@Test(dataProvider = "userDataProvider")
+	public void checkLogin(IUser user) {
+		// Steps
+		AdminHomePage adminHomePage = LoginStartPage.load(UrlRepository.Urls.SSU_HOST.toString())
+				.successAdminLogin(user);
+		// Check
+		Assert.assertEquals(UserRepository.getAdminUser().getFirstName(),
+				adminHomePage.getFirstName());
+		Assert.assertEquals(UserRepository.getAdminUser().getLastName(),
+				adminHomePage.getLastName());
+		Assert.assertEquals(UserRepository.getAdminUser().getRole(),
+				adminHomePage.getRole());
+		adminHomePage.logout();
 	}
 	
 	@DataProvider
@@ -101,7 +123,7 @@ public class LoginTest {
 		};
 	}
 
-	@Test(dataProvider = "searchProvider")
+	//@Test(dataProvider = "searchProvider")
 	public void checkSearchByLogin(IBrowser browser, String url, IUser searchUser) throws InterruptedException {
 		// Preconditions
 		  AdministrationPage administrationPage = LoginStartPage.load(browser, url)
@@ -111,13 +133,24 @@ public class LoginTest {
 		  administrationPage.searchByLoginName(AdministrationPageFields.LOGIN_NAME,
 				  AdministrationPageConditions.STARTS_WITH, searchUser);
 		  // Check
-		  Assert.assertEquals(administrationPage.getFirstName().getText(),
-				  searchUser.getLastName());
-		  Assert.assertEquals(administrationPage.getFirstName().getText(),
-				  searchUser.getLastName());
+		  AssertWrapper.get()
+		  		.forLabelElement(administrationPage.getFirstName())
+		  			.isVisible()
+		  			.isEqualText(searchUser.getFirstName())
+		  			.isExistText(searchUser.getFirstName())
+		  			.next()
+		  		.forLabelElement(administrationPage.getLastName())
+		  			.isVisible()
+		  			.isEqualText(searchUser.getLastName())
+		  			.isExistText(searchUser.getLastName());
+//		  Assert.assertEquals(administrationPage.getFirstName().getText(),
+//				  searchUser.getFirstName());
+//		  Assert.assertEquals(administrationPage.getLastName().getText(),
+//				  searchUser.getLastName());
 		  // Return to previous state
 		  Thread.sleep(4000);
 		  administrationPage.logoutClick();
+		  AssertWrapper.get().check();
 	}
 
 }
