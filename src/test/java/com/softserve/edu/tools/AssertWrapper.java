@@ -65,4 +65,8 @@ public class AssertWrapper {
 		return LabelCriteria.get(webElement, this);
 	}
 
+	public TextCriteria forTextElement(String text) {
+		return TextCriteria.get(text, this);
+	}
+
 }

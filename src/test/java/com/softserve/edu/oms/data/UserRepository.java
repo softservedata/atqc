@@ -48,8 +48,16 @@ public class UserRepository {
 					.build();
 	}
 
-	public static List<IUser> getAllValidUserFormFile() {
-		return (new ExcelUtils("C:/Users/yharasym/workspace/atqc/target/test-classes/allUsers.xlsx")).getAll(); 
+	public static List<IUser> getAllValidAdminUsersFormExcel() {
+		return (new ExcelUsers()).getAllUsers(); 
+	}
+
+	public static List<IUser> getAllValidAdminUsersFormCSV() {
+		return (new CSVUsers()).getAllUsers(); 
+	}
+
+	public static IUser getValidUserFormProperties() {
+		return (new PropertiesUser()).getUser();
 	}
 
 }

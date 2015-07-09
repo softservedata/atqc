@@ -36,37 +36,57 @@ public class LoginTest {
 		WebDriverUtils.get().getWebDriver()
 				.findElement(By.xpath("//a[@href='/OMS/logout.htm']")).click();
 	}
-	
+
 	@DataProvider
 	public Object[][] userDataProvider() {
-		return ListUtils.toMultiArray(UserRepository.getAllValidUserFormFile());
+		return ListUtils.toMultiArray(UserRepository
+				.getAllValidAdminUsersFormCSV());
 	}
 
-	@Test(dataProvider = "userDataProvider")
-	public void checkLogin(IUser user) {
-		// Steps
-		AdminHomePage adminHomePage = LoginStartPage.load(UrlRepository.Urls.SSU_HOST.toString())
-				.successAdminLogin(user);
-		// Check
-		Assert.assertEquals(UserRepository.getAdminUser().getFirstName(),
-				adminHomePage.getFirstName());
-		Assert.assertEquals(UserRepository.getAdminUser().getLastName(),
-				adminHomePage.getLastName());
-		Assert.assertEquals(UserRepository.getAdminUser().getRole(),
-				adminHomePage.getRole());
-		adminHomePage.logout();
+	@DataProvider
+	public Object[][] userDataProperties() {
+		return new Object[][] { { UserRepository.getValidUserFormProperties() }	};
 	}
-	
+
+	//@Test(dataProvider = "userDataProvider")
+	@Test(dataProvider = "userDataProperties")
+	public void checkLogin(IUser user) {
+		// Read Properties from Commandline
+		  System.out.println("\n+++++Property: "
+				    +System.getProperty("selenium-version"));
+		// Steps
+		AdminHomePage adminHomePage = LoginStartPage.load(
+				UrlRepository.Urls.SSU_HOST.toString()).successAdminLogin(user);
+		// Check
+		// Assert.assertEquals(user.getFirstName(),
+		// adminHomePage.getFirstName());
+		// Assert.assertEquals(user.getLastName(),
+		// adminHomePage.getLastName());
+		// Assert.assertEquals(user.getRole(),
+		// adminHomePage.getRole());
+		AssertWrapper.get()
+			.forTextElement(adminHomePage.getFirstName())
+				.isEqualText(user.getFirstName())
+				.next()
+			.forTextElement(adminHomePage.getLastName())
+				.isEqualText(user.getLastName())
+				.next()
+			.forTextElement(adminHomePage.getRole())
+				.isEqualText(user.getRole());
+		// Return to previous state
+		adminHomePage.logout();
+		AssertWrapper.get().check();
+	}
+
 	@DataProvider
 	public Object[][] urlDataProvider() {
-		return new Object[][] {
-				{ UrlRepository.Urls.SSU_HOST.toString() },
-				//{ UrlRepository.getClass86Url() },
-				//{ UrlRepository.getSsuUrl() }
-				};
+		return new Object[][] { { UrlRepository.Urls.SSU_HOST.toString() },
+		// { UrlRepository.getClass86Url() },
+		// { UrlRepository.getSsuUrl() }
+		};
 	}
 
-	//@Test(dataProvider = "urlDataProvider")
+	// @Test(dataProvider = "urlDataProvider")
 	public void checkInvalid(String url) {
 		// Steps
 		LoginPage loginpage = LoginStartPage.load(url);
@@ -76,7 +96,7 @@ public class LoginTest {
 				loginpage.getInvalidLoginValidator());
 	}
 
-	//@Test(dataProvider = "urlDataProvider")
+	// @Test(dataProvider = "urlDataProvider")
 	public void checkAdminLogin(String url) {
 		// Steps
 		// LoginPage loginpage = new LoginPage(driver);
@@ -93,7 +113,7 @@ public class LoginTest {
 				adminHomePage.getRole());
 	}
 
-	//@Test(dataProvider = "urlDataProvider")
+	// @Test(dataProvider = "urlDataProvider")
 	public void checkCustomerLogin(String url) {
 		// Steps
 		// LoginPage loginpage = new LoginPage(driver);
@@ -112,45 +132,44 @@ public class LoginTest {
 
 	@DataProvider
 	public Object[][] searchProvider() {
-		return new Object[][] { {
-			    BrowserRepository.getFirefoxByTemporaryProfile(),
-				Urls.SSU_HOST.toString(),
-				UserRepository.getSearchUser() },
-			    { BrowserRepository.getChromeByTemporaryProfile(),
-				Urls.SSU_HOST.toString(),
-				UserRepository.getSearchUser() },
+		return new Object[][] {
+				{ BrowserRepository.getFirefoxByTemporaryProfile(),
+						Urls.SSU_HOST.toString(),
+						UserRepository.getSearchUser() },
+				{ BrowserRepository.getChromeByTemporaryProfile(),
+						Urls.SSU_HOST.toString(),
+						UserRepository.getSearchUser() },
 		// { BrowserRepository.getChromeByTemporaryProfile() }
 		};
 	}
 
-	//@Test(dataProvider = "searchProvider")
-	public void checkSearchByLogin(IBrowser browser, String url, IUser searchUser) throws InterruptedException {
+	// @Test(dataProvider = "searchProvider")
+	public void checkSearchByLogin(IBrowser browser, String url,
+			IUser searchUser) throws InterruptedException {
 		// Preconditions
-		  AdministrationPage administrationPage = LoginStartPage.load(browser, url)
-				  .successAdminLogin(UserRepository.getAdminUser())
-				  .navigateToAdministrationPage();
-		  // Steps
-		  administrationPage.searchByLoginName(AdministrationPageFields.LOGIN_NAME,
-				  AdministrationPageConditions.STARTS_WITH, searchUser);
-		  // Check
-		  AssertWrapper.get()
-		  		.forLabelElement(administrationPage.getFirstName())
-		  			.isVisible()
-		  			.isEqualText(searchUser.getFirstName())
-		  			.isExistText(searchUser.getFirstName())
-		  			.next()
-		  		.forLabelElement(administrationPage.getLastName())
-		  			.isVisible()
-		  			.isEqualText(searchUser.getLastName())
-		  			.isExistText(searchUser.getLastName());
-//		  Assert.assertEquals(administrationPage.getFirstName().getText(),
-//				  searchUser.getFirstName());
-//		  Assert.assertEquals(administrationPage.getLastName().getText(),
-//				  searchUser.getLastName());
-		  // Return to previous state
-		  Thread.sleep(4000);
-		  administrationPage.logoutClick();
-		  AssertWrapper.get().check();
+		AdministrationPage administrationPage = LoginStartPage
+				.load(browser, url)
+				.successAdminLogin(UserRepository.getAdminUser())
+				.navigateToAdministrationPage();
+		// Steps
+		administrationPage.searchByLoginName(
+				AdministrationPageFields.LOGIN_NAME,
+				AdministrationPageConditions.STARTS_WITH, searchUser);
+		// Check
+		AssertWrapper.get().forLabelElement(administrationPage.getFirstName())
+				.isVisible().isEqualText(searchUser.getFirstName())
+				.isExistText(searchUser.getFirstName()).next()
+				.forLabelElement(administrationPage.getLastName()).isVisible()
+				.isEqualText(searchUser.getLastName())
+				.isExistText(searchUser.getLastName());
+		// Assert.assertEquals(administrationPage.getFirstName().getText(),
+		// searchUser.getFirstName());
+		// Assert.assertEquals(administrationPage.getLastName().getText(),
+		// searchUser.getLastName());
+		// Return to previous state
+		Thread.sleep(4000);
+		administrationPage.logoutClick();
+		AssertWrapper.get().check();
 	}
 
 }
