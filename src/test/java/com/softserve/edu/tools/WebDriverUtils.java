@@ -51,6 +51,7 @@ public final class WebDriverUtils {
 			synchronized (WebDriverUtils.class) {
 				if (driver == null) {
 					//driver = new FirefoxDriver();
+					//driver = browser.getWebDriver(Thread.currentThread().getId());
 					driver = browser.getWebDriver();
 					driver.manage()
 							.timeouts()
